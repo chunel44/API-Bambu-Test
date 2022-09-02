@@ -16,6 +16,7 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint", "simple-import-sort", "unused-imports"],
+  "ignorePatterns": ["/dist"],
   "rules": {
     "semi": "off",
     "@typescript-eslint/semi": "off",
