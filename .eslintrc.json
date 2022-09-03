@@ -56,6 +56,8 @@
           ["^@/interfaces"],
           // config
           ["^@/config"],
+          // utils
+          ["^@/utils"],
           // Other imports
           ["^@/"],
           // relative paths up until 3 level

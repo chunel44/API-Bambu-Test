@@ -8,7 +8,7 @@ class Env {
 
     private dotEnvDevelopment = '.env.dev';
     private dotEnvDefault = '.env';
-    private dotEnvProduction = '.env.production';
+    private dotEnvProduction = '.env.test';
 
     private requiredKeys = [
         "NODE_ENV"
