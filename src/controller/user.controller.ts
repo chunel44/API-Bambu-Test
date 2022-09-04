@@ -1,31 +1,52 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
-type Data =
-    | { message: string }
-    | {
-        user: {
-            email: string;
-            firstName: string;
-            lastName: string;
-        }
-    }
+import { UserService } from "@/services";
+
+import { User } from '../entity/User.entity';
+
+
+
 
 export class UserController {
 
-    static getUsers = async (req: Request, res: Response<Data>) => {
-        res.json({ message: 'hola' })
+    static getUsers = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const users = await UserService.getUsers()
+            return res.json(users);
+        } catch (error) {
+            next(error);
+        }
     }
 
-    static getUser = async (req: Request, res: Response<Data>) => {
-        res.json({ message: 'hola' })
+    static getUser = async (req: Request, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+        try {
+            const user = await UserService.getUser(id);
+            return res.json(user);
+        } catch (error) {
+            next(error);
+        }
     }
 
-    static updateUser = async (req: Request, res: Response<Data>) => {
-        res.json({ message: 'hola' })
+    static updateUser = async (req: Request, res: Response, next: NextFunction) => {
+        const updateValues: User = req.body;
+        const { id } = req.params;
+        try {
+            const user = await UserService.updateUser(id, updateValues);
+            return res.json(user);
+        } catch (error) {
+            next(error);
+        }
     }
 
-    static deleteUser = async (req: Request, res: Response<Data>) => {
-        res.json({ message: 'hola' })
+    static deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+        const { id } = req.params;
+        try {
+            const user = await UserService.deleteUser(id);
+            return res.json(user);
+        } catch (error) {
+            next(error);
+        }
     }
 
 }

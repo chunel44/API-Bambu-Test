@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { readdirSync } from "fs";
+import 'express-async-errors';
+
 
 
 const PATH_ROUTER = `${__dirname}`;
@@ -19,5 +21,6 @@ readdirSync(PATH_ROUTER).filter((fileName) => {
         });
     }
 });
+
 
 export { router };

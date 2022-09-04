@@ -23,6 +23,7 @@
     "no-unused-vars": "off",
     "no-console": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
 
     //#region  //*=========== Unused Import ===========
     "@typescript-eslint/no-unused-vars": "off",
@@ -58,6 +59,8 @@
           ["^@/config"],
           // utils
           ["^@/utils"],
+          // exceptions
+          ["^@/exceptions"],
           // Other imports
           ["^@/"],
           // relative paths up until 3 level

@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcryptjs';
 import { validate } from "class-validator";
 import crypto from 'crypto';
 
@@ -6,13 +7,61 @@ import { transporter } from "@/config/mailer.config";
 
 import { isValidToken, signToken } from '@/utils/jwt.handle';
 
+import { AppError, HttpCode } from '@/exceptions/appError';
+
+import { statusUser } from '@/entity/User.entity';
 import { User } from "@/entity/User.entity";
 
 export class AuthService {
 
+    static async loginUser(email: string, password: string) {
+        const userRepository = myDataSource.getRepository(User);
+
+        const user = await userRepository.findOneBy({ email });
+        console.log(user);
+
+        if (!user) {
+            throw new AppError({
+                httpCode: HttpCode.UNAUTHORIZED,
+                description: 'Error try to login',
+            });
+        }
+
+        if (!bcrypt.compareSync(password, user.password!)) {
+            throw new AppError({
+                httpCode: HttpCode.UNAUTHORIZED,
+                description: 'Password incorrect',
+            });
+        }
+
+        if (user.status !== 'active') {
+            throw new AppError({
+                httpCode: HttpCode.UNAUTHORIZED,
+                description: 'Pending Account. Please Verify Your Email!',
+            });
+        }
+
+        const token = signToken(user.id, email);
+        delete user.confirmationCode;
+        delete user.password;
+
+        return {
+            token,
+            user
+        }
+    }
 
     static async registerUser(firstName: string, lastName: string, password: string, email: string) {
         const userRepository = myDataSource.getRepository(User);
+
+        const existUser = await userRepository.findOneBy({ email });
+
+        if (existUser) {
+            throw new AppError({
+                httpCode: HttpCode.BAD_REQUEST,
+                description: 'This user already exists'
+            })
+        }
 
         const user = new User();
         user.firstName = firstName;
@@ -26,12 +75,19 @@ export class AuthService {
         const validationOpt = { validationError: { target: false, value: false } };
         const errors = await validate(user, validationOpt);
         if (errors.length > 0) {
-            return errors
+            throw new AppError({
+                httpCode: HttpCode.UNPROCESSABLE_ENTITY,
+                validation: errors,
+                description: 'Validation Error'
+            });
         }
+
 
         user.hashPassword();
         const userRes = userRepository.create(user);
         return await myDataSource.getRepository(User).save(userRes);
+
+
 
     }
 
@@ -48,7 +104,10 @@ export class AuthService {
             });
             return 'Please verify your email for activate your account'
         } catch (error) {
-            return 'Error sending to Email'
+            throw new AppError({
+                httpCode: HttpCode.BAD_REQUEST,
+                description: 'Error sending to Email'
+            })
         }
     }
 
@@ -59,23 +118,53 @@ export class AuthService {
             userId = await isValidToken(token);
 
         } catch (error) {
-            return {
-                message: 'Token not valid'
-            }
+            throw new AppError({
+                httpCode: HttpCode.BAD_REQUEST,
+                description: 'Token not valid'
+            });
         }
         const user = await userRepository.findOneBy({ id: userId });
 
         if (!user) {
-            return {
-                message: 'User not exists'
-            }
+            throw new AppError({
+                httpCode: HttpCode.BAD_REQUEST,
+                description: 'User not exists'
+            });
         }
         const { id, email } = user;
+        delete user.confirmationCode;
         return {
             token: signToken(id, email),
-            user: {
-                email
+            user
+        }
+    }
+
+    static async verifyUser(confirmationCode: string) {
+        const userRepository = myDataSource.getRepository(User);
+
+        const user = await userRepository.findOneBy({ confirmationCode });
+
+        if (!user) {
+            throw new AppError({
+                httpCode: HttpCode.BAD_REQUEST,
+                description: 'User not exists'
+            });
+        }
+        user.status = statusUser.ACTIVE;
+        user.confirmationCode = '';
+
+        try {
+            const newUser = await userRepository.save(user);
+            delete newUser.confirmationCode;
+            return {
+                user: newUser
             }
+
+        } catch (error) {
+            throw new AppError({
+                httpCode: HttpCode.BAD_REQUEST,
+                description: 'Failed to verify user'
+            });
         }
     }
 }
