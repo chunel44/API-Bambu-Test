@@ -15,5 +15,15 @@ export class invoiceController {
             next(error);
         }
     }
+    static async getInvoices(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params;
+            const invoice = await invoiceService.getInvoices(id);
+            return res.status(200).json(invoice);
+        } catch (error) {
+            next(error);
+        }
+    }
+
 
 }
