@@ -24,7 +24,8 @@ export class AuthController {
             const user = await AuthService.registerUser(firstName, lastName, password, email, role);
             const { id } = user;
             const token = signToken(id, email);
-            const mail = await AuthService.sendEmail(user.email, user.confirmationCode!)
+            const url = `${req.protocol}://${req.get('host')}`;
+            const mail = await AuthService.sendEmail(user.email, user.confirmationCode!, url)
             res.status(200).json({
                 token,
                 user: {

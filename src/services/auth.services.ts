@@ -82,7 +82,7 @@ export class AuthService {
 
     }
 
-    static async sendEmail(toEmail: string, confirmationCode: string) {
+    static async sendEmail(toEmail: string, confirmationCode: string, url: string) {
         try {
             await transporter.sendMail({
                 from: '"Verify your account 👻" <estrada.2468@gmail.com>', // sender address
@@ -90,7 +90,7 @@ export class AuthService {
                 subject: "Active your account",
                 html: `
                     <b>Verify your account on the following link: </b>
-                    <a href="http://localhost:3000/auth/verify/${confirmationCode}">http://localhost:3000/auth/verify/${confirmationCode}</a>
+                    <a href="${url}/auth/verify/${confirmationCode}">${url}/auth/verify/${confirmationCode}</a>
                 `
             });
             return 'Please verify your email for activate your account'
