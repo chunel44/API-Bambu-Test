@@ -6,8 +6,8 @@ import { checkValidations } from '@/utils/validation';
 import { AppError, HttpCode } from '@/exceptions';
 
 import { Airline } from '@/entity/Airline.entity';
+import { Destination } from '@/entity/Destination.entity';
 
-import { Destination } from '../entity/Destination.entity';
 
 
 export class AirlineService {
@@ -97,7 +97,7 @@ export class AirlineService {
         const destiny = new Destination();
         destiny.airline = airline;
         destiny.from_location = from;
-        destiny.from_location = to;
+        destiny.to_location = to;
         await checkValidations(destiny);
 
         try {
@@ -114,3 +114,7 @@ export class AirlineService {
         }
     }
 }
+
+//9ebfe4bd-d0f5-4445-845d-d8dc7c240aba idAir
+
+//4fe3c8cd-e279-428f-9b91-89caf95a596e idDes
