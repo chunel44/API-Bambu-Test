@@ -1,6 +1,7 @@
-import { validate } from "class-validator";
 
 import { myDataSource } from "@/config";
+
+import { checkValidations } from "@/utils/validation";
 
 import { User } from "@/entity/User.entity";
 
@@ -30,7 +31,7 @@ export class UserService {
 
     static async getUser(id: string) {
         const userRepository = myDataSource.getRepository(User);
-        const user = await userRepository.findOneBy({ id });
+        const user = await userRepository.findOne({ where: { id }, relations: { card: true } });
         if (!user) {
             throw new AppError({
                 httpCode: HttpCode.BAD_REQUEST,
@@ -55,15 +56,7 @@ export class UserService {
         }
 
         // Validate
-        const validationOpt = { validationError: { target: false, value: false } };
-        const errors = await validate(values, validationOpt);
-        if (errors.length > 0) {
-            throw new AppError({
-                httpCode: HttpCode.UNPROCESSABLE_ENTITY,
-                validation: errors,
-                description: 'Validation Error'
-            });
-        }
+        await checkValidations(values);
 
         const updateUser = await userRepository.save({ ...user, ...values });
         if (!updateUser) {

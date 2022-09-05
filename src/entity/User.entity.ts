@@ -12,6 +12,11 @@ export enum statusUser {
     ACTIVE = 'active'
 }
 
+export enum rolesUser {
+    ADMIN = 'admin',
+    COSTUMER = 'costumer'
+}
+
 @Entity({ name: 'customers' })
 export class User {
     @PrimaryGeneratedColumn("uuid")
@@ -50,8 +55,15 @@ export class User {
     @Column({ unique: true })
     confirmationCode?: string;
 
-    @OneToMany(() => Card, (card) => card.user)
+    @OneToMany(() => Card, (card) => card.user, { onDelete: 'CASCADE' })
     card: Card[];
+
+    @Column({
+        type: 'enum',
+        enum: rolesUser,
+        default: rolesUser.COSTUMER
+    })
+    role: rolesUser;
 
     @CreateDateColumn()
     created_at: Date;

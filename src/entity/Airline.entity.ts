@@ -7,7 +7,7 @@ export class Airline {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column({ unique: true })
     name: string;
 
     @CreateDateColumn()
@@ -16,6 +16,6 @@ export class Airline {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @OneToMany(() => Destination, (des) => des.airline)
+    @OneToMany(() => Destination, (des) => des.airline, { onDelete: 'CASCADE' })
     destinations: Destination[]
 }

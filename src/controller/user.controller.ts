@@ -33,7 +33,7 @@ export class UserController {
         const { id } = req.params;
         try {
             const user = await UserService.updateUser(id, updateValues);
-            return res.json(user);
+            return res.status(201).json(user);
         } catch (error) {
             next(error);
         }

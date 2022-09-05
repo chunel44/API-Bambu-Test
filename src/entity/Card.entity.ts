@@ -14,12 +14,13 @@ export class Card {
     @IsCreditCard()
     numberCard: string;
 
+    @Column()
     @IsNotEmpty()
-    type: string
+    type: string;
 
     @ManyToOne(() => User, (user) => user.card)
     @IsNotEmpty()
-    user: User;
+    user?: User;
 
     @CreateDateColumn()
     created_at: Date;
@@ -29,6 +30,6 @@ export class Card {
 
     setTypeCreditCard(): void {
         const visaCards = creditCardType(this.numberCard);
-        this.type = visaCards[0].niceType
+        this.type = visaCards[0].niceType;
     }
 }

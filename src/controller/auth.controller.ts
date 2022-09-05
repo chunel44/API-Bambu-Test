@@ -19,9 +19,9 @@ export class AuthController {
     }
 
     static registerUser = async (req: Request, res: Response, next: NextFunction) => {
-        const { email, firstName, lastName, password } = req.body;
+        const { email, firstName, lastName, password, role = '' } = req.body;
         try {
-            const user = await AuthService.registerUser(firstName, lastName, password, email);
+            const user = await AuthService.registerUser(firstName, lastName, password, email, role);
             const { id } = user;
             const token = signToken(id, email);
             const mail = await AuthService.sendEmail(user.email, user.confirmationCode!)

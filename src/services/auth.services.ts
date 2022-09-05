@@ -1,15 +1,15 @@
 import * as bcrypt from 'bcryptjs';
-import { validate } from "class-validator";
 import crypto from 'crypto';
 
 import { myDataSource } from "@/config";
 import { transporter } from "@/config/mailer.config";
 
 import { isValidToken, signToken } from '@/utils/jwt.handle';
+import { checkValidations } from '@/utils/validation';
 
 import { AppError, HttpCode } from '@/exceptions/appError';
 
-import { statusUser } from '@/entity/User.entity';
+import { rolesUser, statusUser } from '@/entity/User.entity';
 import { User } from "@/entity/User.entity";
 
 export class AuthService {
@@ -51,7 +51,7 @@ export class AuthService {
         }
     }
 
-    static async registerUser(firstName: string, lastName: string, password: string, email: string) {
+    static async registerUser(firstName: string, lastName: string, password: string, email: string, role: string) {
         const userRepository = myDataSource.getRepository(User);
 
         const existUser = await userRepository.findOneBy({ email });
@@ -68,19 +68,11 @@ export class AuthService {
         user.lastName = lastName;
         user.password = password;
         user.email = email;
+        if (role === 'admin') user.role = rolesUser.ADMIN;
+
         user.confirmationCode = crypto.randomBytes(32).toString("hex");
 
-
-        // Validate
-        const validationOpt = { validationError: { target: false, value: false } };
-        const errors = await validate(user, validationOpt);
-        if (errors.length > 0) {
-            throw new AppError({
-                httpCode: HttpCode.UNPROCESSABLE_ENTITY,
-                validation: errors,
-                description: 'Validation Error'
-            });
-        }
+        await checkValidations(user);
 
 
         user.hashPassword();

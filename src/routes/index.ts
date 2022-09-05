@@ -3,7 +3,6 @@ import { readdirSync } from "fs";
 import 'express-async-errors';
 
 
-
 const PATH_ROUTER = `${__dirname}`;
 const router = Router();
 

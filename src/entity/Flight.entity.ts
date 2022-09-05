@@ -1,4 +1,4 @@
-import { IsCurrency, IsDate, IsNotEmpty } from "class-validator";
+import { IsCurrency, IsDate, IsNotEmpty, IsString } from "class-validator";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 import { Airline } from './Airline.entity';
@@ -9,9 +9,10 @@ export class Flight {
     @PrimaryGeneratedColumn("uuid")
     id: string;
 
-    @Column()
+    @Column({ unique: true })
+    @IsString()
     @IsNotEmpty()
-    flight_number: number;
+    flight_number: string;
 
     @CreateDateColumn({ type: 'timestamp' })
     @IsDate()
