@@ -50,7 +50,7 @@ export class User {
         enum: statusUser,
         default: statusUser.PENDING
     })
-    status: statusUser;
+    status?: statusUser;
 
     @Column({ unique: true })
     confirmationCode?: string;
@@ -63,7 +63,7 @@ export class User {
         enum: rolesUser,
         default: rolesUser.COSTUMER
     })
-    role: rolesUser;
+    role?: rolesUser;
 
     @CreateDateColumn()
     created_at: Date;

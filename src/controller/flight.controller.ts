@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { FlightService } from "@/services/flight.servies";
+import { FlightService } from "@/services";
 
 export class FlightController {
 

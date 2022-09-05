@@ -5,9 +5,10 @@ import { checkValidations, strToDate } from "@/utils";
 import { AppError, HttpCode } from "@/exceptions";
 
 import { Airline } from "@/entity/Airline.entity";
+import { Destination } from "@/entity/Destination.entity";
+import { Flight } from "@/entity/Flight.entity";
 
-import { Destination } from '../entity/Destination.entity';
-import { Flight } from '../entity/Flight.entity';
+
 
 
 export class FlightService {
@@ -42,7 +43,7 @@ export class FlightService {
             });
         }
 
-        const destiny = await destinyRepository.findOne({ where: { airline, id: idDestination } });
+        const destiny = await destinyRepository.findOne({ where: { id: idDestination } });
         if (!destiny) {
             throw new AppError({
                 httpCode: HttpCode.BAD_REQUEST,
@@ -69,8 +70,6 @@ export class FlightService {
                 message: 'Flight added successfully!',
                 flight: {
                     saveFlight,
-                    airline,
-                    destiny
                 }
             }
         } catch (error) {
@@ -92,7 +91,7 @@ export class FlightService {
                 description: 'Airline not exists!'
             });
         }
-        const flight = await flightRepository.find({ where: { airline }, relations: { airline: true, destination: true } });
+        const flight = await flightRepository.find({ where: { airline: { id: idAirport } }, relations: { airline: true, destination: true } });
         return {
             flight
         }

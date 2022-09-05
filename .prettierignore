@@ -18,3 +18,5 @@ npm-debug.log*
 .env.*
 # changelog
 CHANGELOG.md
+
+/sql-data

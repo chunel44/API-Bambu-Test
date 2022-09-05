@@ -31,7 +31,7 @@ export class AuthController {
                     email: user.email,
                     firstName: user.firstName,
                     lastname: user.lastName,
-                    status: user.status.toString(),
+                    status: user.status!.toString(),
                 },
                 message: mail
             })

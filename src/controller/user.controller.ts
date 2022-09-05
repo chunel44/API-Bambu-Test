@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 
+import { User } from "@/entity/User.entity";
 import { UserService } from "@/services";
 
-import { User } from '../entity/User.entity';
 
 
 

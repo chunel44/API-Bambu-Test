@@ -7,3 +7,5 @@ dist
 tsconfig.tsbuildinfo
 
 pnpm-lock.yaml
+
+sql-data

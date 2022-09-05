@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import { CardService } from '../services/card.services';
+import { CardService } from "@/services";
+
 
 export class CardController {
 

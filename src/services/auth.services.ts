@@ -18,7 +18,6 @@ export class AuthService {
         const userRepository = myDataSource.getRepository(User);
 
         const user = await userRepository.findOneBy({ email });
-        console.log(user);
 
         if (!user) {
             throw new AppError({
@@ -142,8 +141,12 @@ export class AuthService {
                 description: 'User not exists'
             });
         }
+        if (user.status === 'active') {
+            return {
+                message: "Verified account "
+            }
+        }
         user.status = statusUser.ACTIVE;
-        user.confirmationCode = '';
 
         try {
             const newUser = await userRepository.save(user);

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { Airline } from '@/entity/Airline.entity';
-import { AirlineService } from '@/services/airline.services';
+import { AirlineService } from '@/services';
 
 export class AirlineController {
 
